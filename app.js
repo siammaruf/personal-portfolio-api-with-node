@@ -1,6 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const Posts = require('./routes/postRoutes')
+const mongoose = require('./config/database')
+
+mongoose.Promise = global.Promise
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
