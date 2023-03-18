@@ -1,4 +1,5 @@
 const express = require('express')
+const router = express.Router()
 const {
     getPostController,
     getPostByIdController,
@@ -6,7 +7,6 @@ const {
     updatePostController,
     deletePostController,
 } = require("../controllers/postController");
-const router = express.Router()
 
 router.get("/", getPostController)
 router.get("/:id", getPostByIdController)

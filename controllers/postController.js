@@ -1,4 +1,4 @@
-const { Post, validate } = require('../models/Post')
+const { Post, Validate } = require('../models/Post')
 
 // Get Post Api
 const getPostController = async ( req, res ) => {
@@ -15,7 +15,7 @@ const getPostByIdController = async ( req, res ) => {
 
 // Create post
 const createPostController = async ( req, res ) => {
-    const { error } = validate(req.body)
+    const { error } = Validate(req.body)
     if ( error ) return res.status(400).send(error.details[0].message)
     try{
         const post = Post({
@@ -34,7 +34,7 @@ const createPostController = async ( req, res ) => {
 
 // Update post
 const updatePostController = async ( req, res ) => {
-    const { error } = validate(req.body)
+    const { error } = Validate(req.body)
     if ( error ) return res.status(400).send(error.details[0].message)
     try{
         const post = await Post.findByIdAndUpdate(req.params.id,{

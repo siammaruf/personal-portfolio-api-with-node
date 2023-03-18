@@ -33,7 +33,7 @@ const postSchema = new mongoose.Schema({
     }
 })
 
-const Post = mongoose.model('Post', postSchema)
+const post = mongoose.model('Post', postSchema)
 const postValidator = (post) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
@@ -45,6 +45,6 @@ const postValidator = (post) => {
 }
 
 module.exports = {
-    Post,
-    validate: postValidator
+    Post: post,
+    Validate: postValidator
 }
