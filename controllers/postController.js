@@ -1,10 +1,8 @@
-const Joi = require('joi')
-const Post = require('../models/PostModel')
+const { Post, validate } = require('../models/Post')
 
 // Get Post Api
 const getPostController = async ( req, res ) => {
-    const posts = await Post.find({})
-    if( posts.length === 0 ) return res.status(403).send('Posts is empty !')
+    const posts = await Post.find().sort('name')
     res.send(posts)
 }
 
@@ -17,51 +15,50 @@ const getPostByIdController = async ( req, res ) => {
 
 // Create post
 const createPostController = async ( req, res ) => {
-    const schema = Joi.object({
-        name: Joi.string().min(3).required(),
-        author: Joi.string().min(3).required(),
-        tags: Joi.array().required(),
-        isPublished: Joi.boolean().required()
-    })
-    const { error } = schema.validate(req.body)
+    const { error } = validate(req.body)
     if ( error ) return res.status(400).send(error.details[0].message)
-    const post = new Post({
-        name: req.body.name,
-        author: req.body.author,
-        tags: req.body.tags,
-        isPublished: req.body.isPublished,
-    })
-    const result = await post.save()
-    res.send(result)
-}
-
-// Update post
-const updatePostController = async ( req, res ) => {
-    const schema = Joi.object({
-        name: Joi.string().min(3),
-        author: Joi.string().min(3),
-        tags: Joi.array(),
-        isPublished: Joi.boolean()
-    })
-    const { error } = schema.validate(req.body)
-    if ( error ) return res.status(400).send(error.details[0].message)
-    const post = await Post.findByIdAndUpdate(req.params.id,{
-        $set:{
+    try{
+        const post = Post({
             name: req.body.name,
             author: req.body.author,
             tags: req.body.tags,
             isPublished: req.body.isPublished,
-        }
-    },{new:true})
-    if ( !post ) return res.status(403).send('No post found with the ID !')
-    res.send(post)
+        })
+        const result = await post.save()
+        res.send(result)
+    }catch (ex) {
+        for (let field in ex.errors)
+            console.log(ex.error[field].message);
+    }
+}
+
+// Update post
+const updatePostController = async ( req, res ) => {
+    const { error } = validate(req.body)
+    if ( error ) return res.status(400).send(error.details[0].message)
+    try{
+        const post = await Post.findByIdAndUpdate(req.params.id,{
+            name: req.body.name,
+            author: req.body.author,
+            tags: req.body.tags,
+            isPublished: req.body.isPublished,
+        },{new:true})
+        res.send(post)
+    }catch (ex) {
+        for (let field in ex.errors)
+            console.log(ex.error[field].message);
+    }
 }
 
 // Delete post
 const deletePostController = async ( req, res ) => {
-    const result = await Post.findByIdAndRemove({_id:req.params.id})
-    if ( !result ) return res.status(403).send('No post found with the ID !')
-    res.send(result)
+    try{
+        const result = await Post.findByIdAndRemove({_id:req.params.id})
+        res.send(result)
+    }catch (ex) {
+        for (let field in ex.errors)
+            console.log(ex.error[field].message);
+    }
 }
 
 module.exports = {
