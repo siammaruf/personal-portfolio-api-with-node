@@ -2,11 +2,15 @@ const mongoose = require('mongoose')
 const Joi = require('joi')
 
 const postSchema = new mongoose.Schema({
-    name: {
+    title: {
         type: String,
         require: true,
         minLength: 3,
         maxLength: 50
+    },
+    content:{
+        type: String,
+        default: ''
     },
     author: {
         type: String,
@@ -23,6 +27,10 @@ const postSchema = new mongoose.Schema({
             message: 'The post should have at least one tag !'
         }
     },
+    category:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
     date: {
         type: Date,
         default: Date.now()
@@ -36,7 +44,8 @@ const postSchema = new mongoose.Schema({
 const post = mongoose.model('Post', postSchema)
 const postValidator = (post) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).required(),
+        title: Joi.string().min(3).required(),
+        content: Joi.string(),
         author: Joi.string().min(3).required(),
         tags: Joi.array().required(),
         isPublished: Joi.boolean().required()

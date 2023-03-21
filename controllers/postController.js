@@ -2,7 +2,7 @@ const { Post, Validate } = require('../models/Post')
 
 // Get Post Api
 const getPostController = async ( req, res ) => {
-    const posts = await Post.find().sort('name')
+    const posts = await Post.find().sort('title')
     res.send(posts)
 }
 
@@ -19,7 +19,8 @@ const createPostController = async ( req, res ) => {
     if ( error ) return res.status(400).send(error.details[0].message)
     try{
         const post = Post({
-            name: req.body.name,
+            title: req.body.name,
+            content: req.body.name,
             author: req.body.author,
             tags: req.body.tags,
             isPublished: req.body.isPublished,
@@ -38,7 +39,8 @@ const updatePostController = async ( req, res ) => {
     if ( error ) return res.status(400).send(error.details[0].message)
     try{
         const post = await Post.findByIdAndUpdate(req.params.id,{
-            name: req.body.name,
+            title: req.body.name,
+            content: req.body.name,
             author: req.body.author,
             tags: req.body.tags,
             isPublished: req.body.isPublished,
