@@ -11,13 +11,13 @@ const skillSchema = new mongoose.Schema({
     experienceYears:{
         type: Number,
         minLength: 1,
-        maxLength: 2,
+        maxLength: 3,
         require: true,
     },
     experienceLevels:{
         type: Number,
         minLength: 1,
-        maxLength: 2,
+        maxLength: 3,
         require: true,
     }
 })
@@ -26,8 +26,8 @@ const skill = mongoose.model('Skill',skillSchema)
 const fieldValidation = (skill) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
-        experienceYears: Joi.number().min(1).max(2).required(),
-        experienceLevels: Joi.number().min(1).max(2).required(),
+        experienceYears: Joi.number().min(1).required(),
+        experienceLevels: Joi.number().min(1).required(),
     })
     return schema.validate(skill)
 }

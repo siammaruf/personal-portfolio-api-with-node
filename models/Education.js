@@ -24,9 +24,9 @@ const eduSchema = new mongoose.Schema({
 const edu = mongoose.model('Education',eduSchema)
 const fieldValidation = (edu) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).max(250).required(),
-        institute: Joi.string().max(4).required(),
-        passingYear: Joi.number().max(4).required(),
+        title: Joi.string().min(3).max(250).required(),
+        institute: Joi.string().min(4).required(),
+        passingYear: Joi.number().min(4).required(),
     })
     return schema.validate(edu)
 }

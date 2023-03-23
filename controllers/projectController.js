@@ -36,7 +36,7 @@ const createProjectController = async (req, res) => {
         .find({'_id':{ $in: req.body.categoryId}})
         .select('_id name');
 
-    if (!categories) return res.status(400).send('Invalid category!')
+    if (categories.length <= 0) return res.status(400).send('Invalid category!')
 
     try{
         const project = Project({

@@ -7,11 +7,12 @@ const {
     updateEduController,
     deleteEduController
 } = require('../controllers/eduController')
+const auth = require('../middlewares/auth')
 
 router.get("/", getEduController)
 router.get("/:id", getEduByIdController)
-router.post("/", createEduController)
-router.put("/:id", updateEduController)
-router.delete("/:id", deleteEduController)
+router.post("/", auth, createEduController)
+router.put("/:id", auth, updateEduController)
+router.delete("/:id", auth, deleteEduController)
 
 module.exports = router

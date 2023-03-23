@@ -7,11 +7,12 @@ const {
     deleteCategoryController,
 } = require("../controllers/categoryController");
 const router = express.Router()
+const auth = require('../middlewares/auth')
 
 router.get("/", getCategoryController)
 router.get("/:id", getCategoryByIdController)
-router.post("/", createCategoryController)
-router.put("/:id", updateCategoryController)
-router.delete("/:id", deleteCategoryController)
+router.post("/", auth, createCategoryController)
+router.put("/:id", auth, updateCategoryController)
+router.delete("/:id", auth, deleteCategoryController)
 
 module.exports = router

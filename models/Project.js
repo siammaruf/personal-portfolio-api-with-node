@@ -12,7 +12,6 @@ const projectSchema = new mongoose.Schema({
     },
     descriptions:{
         type: String,
-        default: ''
     },
     image: {
         type: mediaSchema,
@@ -20,12 +19,7 @@ const projectSchema = new mongoose.Schema({
     },
     categories:{
         type: [categorySchema],
-        validate: {
-            validator: function (v){
-                return v && v.length > 0
-            },
-            message: 'The project should have at least one category !'
-        }
+        require:true
     }
 })
 
@@ -42,5 +36,6 @@ const fieldValidation = (project) => {
 
 module.exports = {
     Project: project,
-    Validate: fieldValidation
+    Validate: fieldValidation,
+    projectSchema
 }
