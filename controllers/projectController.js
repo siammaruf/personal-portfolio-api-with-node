@@ -6,10 +6,18 @@ const { Category } = require('../models/Category')
 const getProjectController = async (req, res) => {
     try{
         const project = await Project.find().sort('title')
-        res.send(project)
+        res.status(200).json({
+            error: false,
+            message: "Showing projects!",
+            date: project
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.errors[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
@@ -17,29 +25,45 @@ const getProjectController = async (req, res) => {
 const getProjectByIdController = async (req, res) => {
     try{
         const project = await Project.findById(req.params.id)
-        res.send(project)
+        res.status(200).json({
+            error: false,
+            message: "Showing project!",
+            date: project
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.errors[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
 // Create Project
 const createProjectController = async (req, res) => {
-    const { error } = Validate(req.body)
-    if ( error ) return res.status(403).send(error.details[0].message)
-
-    const image = await Media.findById(req.body.imageId)
-    if (!image) return res.status(400).send('Invalid image!')
-
-    const categories = await Category
-        .find({'_id':{ $in: req.body.categoryId}})
-        .select('_id name');
-
-    if (categories.length <= 0) return res.status(400).send('Invalid category!')
-
     try{
-        const project = Project({
+        const { error } = Validate(req.body)
+        if ( error ) return res.status(400).json({
+            error: false,
+            message: error.details[0].message
+        })
+
+        const image = await Media.findById(req.body.imageId)
+        if (!image) return res.status(400).json({
+            error: false,
+            message: "Invalid image!"
+        })
+
+        const categories = await Category
+            .find({'_id':{ $in: req.body.categoryId}})
+            .select('_id name');
+
+        if (categories.length <= 0) return res.status(400).json({
+            error: false,
+            message: "Invalid category!"
+        })
+        const project = await Project({
             title: req.body.title,
             descriptions: req.body.descriptions,
             image:{
@@ -48,12 +72,19 @@ const createProjectController = async (req, res) => {
                 path: image.path
             },
             categories: categories,
-        })
-        const saveProject = await project.save()
-        res.send(saveProject)
+        }).save()
+        res.status(200).json({
+            error: false,
+            message: "Project saved successfully!",
+            date: project
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.errors[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
@@ -61,10 +92,18 @@ const createProjectController = async (req, res) => {
 const deleteProjectController = async (req, res) => {
     try{
         const project = await Project.findByIdAndRemove(req.params.id)
-        res.send(project)
+        res.status(200).json({
+            error: false,
+            message: "Project deleted successfully!",
+            date: project
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.errors[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 

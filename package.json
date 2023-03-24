@@ -4,6 +4,7 @@
   "description": "This is a personal portfolio backend API with node.js, express, and mongodb",
   "main": "index.js",
   "scripts": {
+    "server": "node app.js",
     "dev": "nodemon app.js"
   },
   "repository": {

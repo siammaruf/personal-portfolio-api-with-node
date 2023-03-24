@@ -6,10 +6,18 @@ const fs = require('fs')
 const getMediaController = async (req, res) => {
     try {
         const media = await Media.find().sort('name');
-        res.send(media)
+        res.status(200).json({
+            error: false,
+            message: "Showing Media Files!",
+            date: media
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.error[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
@@ -17,29 +25,47 @@ const getMediaController = async (req, res) => {
 const getMediaByIdController = async (req, res) => {
     try {
         const media = await Media.findById(req.params.id);
-        res.send(media)
+        res.status(200).json({
+            error: false,
+            message: "Showing Media File!",
+            date: media
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.error[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
 // Save a media file
 const createMediaController = async ( req, res ) => {
-    const Obj = {
-        name: path.parse(req.file.filename).name,
-        path: `uploads/${req.file.filename}`,
-        type: req.file.mimetype,
-    }
-    const { error } = Validate(Obj)
-    if( error ) return res.status(403).send(error.details[0].message)
     try {
-        const media = Media(Obj)
-        const saveMedia = await media.save()
-        res.send(saveMedia)
+        const Obj = {
+            name: path.parse(req.file.filename).name,
+            path: `uploads/${req.file.filename}`,
+            type: req.file.mimetype,
+        }
+        const { error } = Validate(Obj)
+        if ( error ) return res.status(400).json({
+            error: false,
+            message: error.details[0].message
+        })
+        const media = await Media(Obj).save()
+        res.status(200).json({
+            error: false,
+            message: "Media saved successfully!",
+            date: media
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.error[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
@@ -51,10 +77,18 @@ const deleteMediaController = async (req,res) => {
         fs.unlink(filePath,(error)=>{
             if (error) throw error
         })
-        res.send(media)
+        res.status(200).json({
+            error: false,
+            message: "Media deleted successfully!",
+            date: media
+        });
     }catch (ex) {
         for (let field in ex.errors)
             console.log(ex.error[field].message);
+        res.status(500).json({
+            error: true,
+            message: "Internal Server Error"
+        });
     }
 }
 
